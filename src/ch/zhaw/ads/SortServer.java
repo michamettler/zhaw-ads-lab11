@@ -44,7 +44,7 @@ public class SortServer implements CommandExecutor {
         for (int k = 0; k < a.length; k++) {
             int min = k;
             for (int i = k; i < a.length; i++) {
-                if (a[i] > a[min]) min = i;
+                if (a[i] < a[min]) min = i;
             }
             if (min != k) swap(a, min, k);
         }
@@ -102,13 +102,16 @@ public class SortServer implements CommandExecutor {
 
         long startTime = System.currentTimeMillis();
         long endTime = startTime;
+        int cntr = 0;
 
         while (endTime < startTime + 1000) {
+            System.arraycopy(a, 0, b, 0, a.length);
             sorter.accept(a);
+            cntr++;
             endTime = System.currentTimeMillis();
         }
 
-        elapsed = (double) (endTime - startTime);
+        elapsed = (double) (endTime - startTime) / cntr;
         if (!isSorted(b)) throw new Exception("ERROR not sorted");
         return elapsed;
     }
