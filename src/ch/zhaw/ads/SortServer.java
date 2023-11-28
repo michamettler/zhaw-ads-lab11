@@ -2,6 +2,7 @@ package ch.zhaw.ads;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -16,15 +17,37 @@ public class SortServer implements CommandExecutor {
     }
 
     public void bubbleSort(int[] a) {
-        // TODO Implement Aufgabe 1
+        for (int k = a.length - 1; k > 0; k--) {
+            boolean noSwap = true;
+            for (int i = 0; i < k; i++) {
+                if (a[i] > a[i + 1]) {
+                    swap(a, i, i + 1);
+                    noSwap = false;
+                }
+            }
+            if (noSwap) break;
+        }
     }
 
     public void insertionSort(int[] a) {
-        // TODO Implement Aufgabe 3
+        for (int k = 1; k < a.length; k++) {
+            int x = a[k];
+            int i;
+            for (i = k; i > 0 && a[i - 1] > x; i--) {
+                a[i] = a[i - 1];
+            }
+            a[i] = x;
+        }
     }
 
     public void selectionSort(int[] a) {
-        // TODO Implement Aufgabe 3
+        for (int k = 0; k < a.length; k++) {
+            int min = k;
+            for (int i = k; i < a.length; i++) {
+                if (a[i] > a[min]) min = i;
+            }
+            if (min != k) swap(a, min, k);
+        }
     }
 
     public void streamSort(int[] a) {
@@ -34,25 +57,35 @@ public class SortServer implements CommandExecutor {
     }
 
     public boolean isSorted(int[] a) {
-        // TODO Implement Aufgabe 1
+        for (int i = 0; i < a.length - 1; i++) {
+            if (a[i] > a[i + 1]) return false;
+        }
         return true;
     }
 
     public int[] randomData() {
         int[] a = new int[dataElems];
-        // TODO Implement Aufgabe 1
+        var generator = new Random();
+        for (int i = 0; i < dataElems; i++) {
+            a[i] = generator.nextInt();
+        }
         return a;
     }
 
     public int[] ascendingData() {
         int[] a = new int[dataElems];
-        // TODO Implement Aufgabe 1
+        for (int i = 0; i < dataElems; i++) {
+            a[i] = i;
+        }
         return a;
     }
 
     public int[] descendingData() {
         int[] a = new int[dataElems];
-        // TODO Implement Aufgabe 1
+        int val = dataElems;
+        for (int i = 0; i < dataElems; i++) {
+            a[i] = val--;
+        }
         return a;
     }
 
@@ -70,21 +103,24 @@ public class SortServer implements CommandExecutor {
         long startTime = System.currentTimeMillis();
         long endTime = startTime;
 
-        // TODO Implement Aufgabe 1 und 2 (Tipp: siehe Consumer für Aufruf von Sortiermethode)
+        while (endTime < startTime + 1000) {
+            sorter.accept(a);
+            endTime = System.currentTimeMillis();
+        }
 
-        elapsed = (double)(endTime - startTime);
-        if (!isSorted(b)) throw new Exception ("ERROR not sorted");
+        elapsed = (double) (endTime - startTime);
+        if (!isSorted(b)) throw new Exception("ERROR not sorted");
         return elapsed;
     }
 
-    public String execute(String arg)  {
+    public String execute(String arg) {
         Map<String, Consumer<int[]>> sorter = Map.of(
                 "BUBBLE", this::bubbleSort,
                 "INSERTION", this::insertionSort,
                 "SELECTION", this::selectionSort,
                 "STREAM", this::streamSort
         );
-        Map<String, Supplier<int[]>> generator =  Map.of(
+        Map<String, Supplier<int[]>> generator = Map.of(
                 "RANDOM", this::randomData,
                 "ASC", this::ascendingData,
                 "DESC", this::descendingData
@@ -103,12 +139,18 @@ public class SortServer implements CommandExecutor {
     public static void main(String[] args) {
         SortServer sorter = new SortServer();
         String sort;
-        sort = "BUBBLE RANDOM 10000"; System.out.println(sorter.execute(sort));
-        sort = "SELECTION RANDOM 10000"; System.out.println(sorter.execute(sort));
-        sort = "INSERTION RANDOM 10000"; System.out.println(sorter.execute(sort));
+        sort = "BUBBLE RANDOM 10000";
+        System.out.println(sorter.execute(sort));
+        sort = "SELECTION RANDOM 10000";
+        System.out.println(sorter.execute(sort));
+        sort = "INSERTION RANDOM 10000";
+        System.out.println(sorter.execute(sort));
 
-        sort = "BUBBLE ASC 10000"; System.out.println(sorter.execute(sort));
-        sort = "SELECTION ASC 10000"; System.out.println(sorter.execute(sort));
-        sort = "INSERTION ASC 10000"; System.out.println(sorter.execute(sort));
+        sort = "BUBBLE ASC 10000";
+        System.out.println(sorter.execute(sort));
+        sort = "SELECTION ASC 10000";
+        System.out.println(sorter.execute(sort));
+        sort = "INSERTION ASC 10000";
+        System.out.println(sorter.execute(sort));
     }
 }
