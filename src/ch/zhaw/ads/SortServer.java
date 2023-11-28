@@ -101,17 +101,10 @@ public class SortServer implements CommandExecutor {
         int[] b = new int[dataElems];
 
         long startTime = System.currentTimeMillis();
-        long endTime = startTime;
-        int cntr = 0;
+        sorter.accept(a);
+        long endTime = System.currentTimeMillis();
 
-        while (endTime < startTime + 1000) {
-            System.arraycopy(a, 0, b, 0, a.length);
-            sorter.accept(a);
-            cntr++;
-            endTime = System.currentTimeMillis();
-        }
-
-        elapsed = (double) (endTime - startTime) / cntr;
+        elapsed = (double) (endTime - startTime);
         if (!isSorted(b)) throw new Exception("ERROR not sorted");
         return elapsed;
     }
